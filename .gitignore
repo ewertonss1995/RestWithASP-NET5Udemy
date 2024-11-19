@@ -1,0 +1,84 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Rr]elease/*/
+x64/
+x86/
+bin/
+obj/
+out/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET
+appsettings*.json
+*.db
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# NPM packages
+node_modules/
+
+# Visual Studio Code
+.vscode/
+
+# DotNet core
+project.lock.json
+project.fragment.lock.json
+*.sln.docstates
+*.user
+
+# Azure Web Apps
+publish/
+
+# User-specific files
+*.suo
+*.user
+*.userprefs
+*.sln.ide
+
+# Logs
+logs/
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+*.symbols.nupkg
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+~$*
+
+# Rider
+.idea/
+*.sln.iml
+
+# Backup files
+*~ 
+*.bak
+
+# Other
+*.cache
+*.pdb
+*.mdb
+*.pidb
+*.svd
+*.userprefs
