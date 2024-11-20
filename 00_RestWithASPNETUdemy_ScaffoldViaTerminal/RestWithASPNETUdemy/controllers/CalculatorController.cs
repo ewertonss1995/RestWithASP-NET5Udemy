@@ -80,7 +80,7 @@ namespace RestWithASPNETUdemy.controllers
         }
 
         [HttpGet("sqrt/{number}")]
-        public IActionResult GetSquare(string number)
+        public IActionResult GetSquareRoot(string number)
         {
             if (IsNumeric(number))
             {
