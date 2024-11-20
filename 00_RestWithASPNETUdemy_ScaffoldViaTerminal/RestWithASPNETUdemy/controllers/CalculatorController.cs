@@ -67,6 +67,24 @@ namespace RestWithASPNETUdemy.controllers
             return BadRequest("Invalid Input.");
         }
 
+        [HttpGet("sqrt/{number}")]
+        public IActionResult GetSquare(string number)
+        {
+            if (IsNumeric(number))
+            {
+                var decimalValue = convertToDecimal(number);
+                if (decimalValue < 0)
+                {
+                    return BadRequest("Cannot calculate square root of a negative number.");
+                }
+
+                var result = Math.Sqrt((double)decimalValue);
+                return Ok(result.ToString());
+            }
+
+            return BadRequest("Invalid Input.");
+        }
+
         private bool IsNumeric(string stringNumber)
         {
             double number;
