@@ -4,6 +4,9 @@ using RestWithASPNETUdemy.Business;
 using RestWithASPNETUdemy.Business.Implementation;
 using RestWithASPNETUdemy.Repository;
 using RestWithASPNETUdemy.Repository.Implementations;
+using Serilog;
+using MySqlConnector;
+using EvolveDb;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 
+// Add context MySQLContext
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(
     options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0))));
+
+if (builder.Environment.IsDevelopment())
+{
+    MigrateDatabase(connection);
+}
 
 // Versioning Api
 builder.Services.AddApiVersioning();
@@ -36,3 +45,23 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
+
+void MigrateDatabase(string? connection)
+{
+    try
+    {
+        using var evolveConnection = new MySqlConnection(connection);
+        var evolve = new Evolve(evolveConnection, Log.Information)
+        {
+            Locations = new List<string> { "db/migrations", "db/dataset" },
+            IsEraseDisabled = true
+        };
+
+        evolve.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Log.Error("Database migration failed", ex);
+        throw;
+    }
+}

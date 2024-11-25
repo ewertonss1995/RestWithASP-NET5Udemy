@@ -42,7 +42,7 @@ namespace RestWithASPNETUdemy.Repository.Implementations
 
         public Person Update(Person person)
         {
-            if (!Exists(person.Id)) return person;
+            if (!Exists(person.Id)) return null;
             { }
 
             var result = _context.People.SingleOrDefault(p => p.Id.Equals(person.Id));
