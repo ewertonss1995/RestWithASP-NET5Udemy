@@ -19,6 +19,7 @@ var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(
     options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0))));
 
+// Configuration to use migrations
 if (builder.Environment.IsDevelopment())
 {
     MigrateDatabase(connection);
@@ -30,6 +31,9 @@ builder.Services.AddApiVersioning();
 // Dependency injection
 builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
 builder.Services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
+builder.Services.AddScoped<IBookBusiness, BookBusinessImplementation>();
+builder.Services.AddScoped<IBookRepository, BookRepositoryImplementation>();
+
 
 // ...
 //builder.Services.AddOpenApi();
@@ -46,6 +50,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
 
+// Using migration
 void MigrateDatabase(string? connection)
 {
     try
