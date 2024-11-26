@@ -1,3 +1,5 @@
+using RestWithASPNETUdemy.Data.Converter.Implementations;
+using RestWithASPNETUdemy.Data.VO;
 using RestWithASPNETUdemy.Model;
 using RestWithASPNETUdemy.Repository;
 
@@ -7,29 +9,33 @@ namespace RestWithASPNETUdemy.Business.Implementation
     {
         private readonly IRepository<Person> _repository;
 
+        private readonly PersonConverter _converter;
         public PersonBusinessImplementation(IRepository<Person> repository)
         {
             _repository = repository;
+            _converter = new PersonConverter();
         }
 
-        public Person Create(Person person)
+        public List<PersonVO> FindAll()
         {
-            return _repository.Create(person);
+            return _converter.Parse(_repository.FindAll());
         }
 
-        public Person FindById(long id)
+        public PersonVO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _converter.Parse(_repository.FindById(id));
         }
 
-        public List<Person> FindAll()
+        public PersonVO Create(PersonVO personVO)
         {
-            return _repository.FindAll();
+            var personEntity = _converter.Parse(personVO);
+            return _converter.Parse(_repository.Create(personEntity));
         }
 
-        public Person Update(Person person)
+        public PersonVO Update(PersonVO personVO)
         {
-            return _repository.Update(person);
+            var personEntity = _converter.Parse(personVO);
+            return _converter.Parse(_repository.Update(personEntity));
         }
 
         public void Delete(long id)
