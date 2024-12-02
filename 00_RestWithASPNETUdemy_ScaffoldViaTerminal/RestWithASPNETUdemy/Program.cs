@@ -7,6 +7,7 @@ using Serilog;
 using MySqlConnector;
 using EvolveDb;
 using RestWithASPNETUdemy.Repository.Generic;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,18 @@ if (builder.Environment.IsDevelopment())
 {
     MigrateDatabase(connection);
 }
+
+builder.Services.AddMvc(options =>
+{
+    /* RespectBrowserAcceptHeader -> It is used to the application 
+    accept the propety that come in the request header. */
+    options.RespectBrowserAcceptHeader = true;
+
+    /* The lines below add the mediaTypes accepted by the application. */
+    options.FormatterMappings.SetMediaTypeMappingForFormat("xml", MediaTypeHeaderValue.Parse("application/xml"));
+    options.FormatterMappings.SetMediaTypeMappingForFormat("json", MediaTypeHeaderValue.Parse("application/json"));
+})
+.AddXmlSerializerFormatters();
 
 // Versioning Api
 builder.Services.AddApiVersioning();
