@@ -8,6 +8,8 @@ using MySqlConnector;
 using EvolveDb;
 using RestWithASPNETUdemy.Repository.Generic;
 using Microsoft.Net.Http.Headers;
+using RestWithASPNETUdemy.Hypermedia.Filters;
+using RestWithASPNETUdemy.Hypermedia.Enricher;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,7 @@ if (builder.Environment.IsDevelopment())
     MigrateDatabase(connection);
 }
 
+// [Content negociation] -> Add config to use others mediatype as XML for example.
 builder.Services.AddMvc(options =>
 {
     /* RespectBrowserAcceptHeader -> It is used to the application 
@@ -38,7 +41,13 @@ builder.Services.AddMvc(options =>
 })
 .AddXmlSerializerFormatters();
 
-// Versioning Api
+// Configuration for use HATEOS
+var filterOptions = new HyperMediaFilterOptions();
+filterOptions.ContentResponseEnricherList.Add(new PersonEnricher());
+
+builder.Services.AddSingleton(filterOptions);
+
+// Versioning Api()
 builder.Services.AddApiVersioning();
 
 // Dependency injection
@@ -60,6 +69,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapControllerRoute("DefaultApi", "{controller=values}/{id?}");
 app.Run();
 
 // Using migration
