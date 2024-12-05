@@ -10,6 +10,8 @@ using RestWithASPNETUdemy.Repository.Generic;
 using Microsoft.Net.Http.Headers;
 using RestWithASPNETUdemy.Hypermedia.Filters;
 using RestWithASPNETUdemy.Hypermedia.Enricher;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +52,22 @@ builder.Services.AddSingleton(filterOptions);
 // Versioning Api()
 builder.Services.AddApiVersioning();
 
+// Using swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Rest API's From 0 to Azure with ASP.NET Core 5 and Docker",
+        Version = "v1",
+        Description = "API RESTful developed in course 'Rest API's From 0 to Azure with ASP.NET Core 5 and Docker'",
+        Contact = new OpenApiContact
+        {
+            Name = "Ewerton Silva",
+            Url = new Uri("https://github.com/ewertonss1995")
+        }
+    });
+});
+
 // Dependency injection
 builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
 builder.Services.AddScoped<IBookBusiness, BookBusinessImplementation>();
@@ -68,8 +86,20 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.MapControllers();
-app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=apiVersion}/{id?}");
+app.MapControllers(); // Responsable to execute the controllers
+app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=apiVersion}/{id?}"); // Responsable to execute HATEOS
+app.UseSwagger(); // Responsable to generate Json with the documentation
+app.UseSwaggerUI(c =>
+{
+    // Add access Url and page name.
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Rest API's From 0 to Azure with ASP.NET Core 5 and Docker - v1");
+}); // UseSwaggerUI is responsable to generate a HTML page
+
+// Configuring how will be my swagger page.
+var option = new RewriteOptions();
+option.AddRedirect("^$", "swagger"); // Redirection rule to swagger page
+app.UseRewriter(option);
+
 app.Run();
 
 // Using migration
