@@ -14,9 +14,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+var appName = "Rest API's RESTful From 0 to Azure with ASP.NET Core 5 and Docker";
+var appVersion = "v1";
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddRouting(options => options.LowercaseUrls = true); // For what url's like swagger url is always in lower case
 builder.Services.AddControllers();
 
 // Add context MySQLContext
@@ -46,6 +47,7 @@ builder.Services.AddMvc(options =>
 // Configuration for use HATEOS
 var filterOptions = new HyperMediaFilterOptions();
 filterOptions.ContentResponseEnricherList.Add(new PersonEnricher());
+filterOptions.ContentResponseEnricherList.Add(new BookEnricher());
 
 builder.Services.AddSingleton(filterOptions);
 
@@ -53,13 +55,14 @@ builder.Services.AddSingleton(filterOptions);
 builder.Services.AddApiVersioning();
 
 // Using swagger
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc(appVersion, new OpenApiInfo
     {
-        Title = "Rest API's From 0 to Azure with ASP.NET Core 5 and Docker",
-        Version = "v1",
-        Description = "API RESTful developed in course 'Rest API's From 0 to Azure with ASP.NET Core 5 and Docker'",
+        Title = appName,
+        Version = appVersion,
+        Description = $"REST API RESTful developed in course '{appName}'",
         Contact = new OpenApiContact
         {
             Name = "Ewerton Silva",
@@ -88,11 +91,15 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers(); // Responsable to execute the controllers
 app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=apiVersion}/{id?}"); // Responsable to execute HATEOS
-app.UseSwagger(); // Responsable to generate Json with the documentation
+
+// Executing swagger
+app.UseSwagger(); // Responsable to Generate Json with the swagger documentation
 app.UseSwaggerUI(c =>
 {
-    // Add access Url and page name.
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Rest API's From 0 to Azure with ASP.NET Core 5 and Docker - v1");
+    // Add access Url and page name to see the json genareted.
+    /* "/swagger/v1/swagger.json" -> This link is going to show up on the page top 
+    when the the application is running. */
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{appName} - {appVersion}");
 }); // UseSwaggerUI is responsable to generate a HTML page
 
 // Configuring how will be my swagger page.
@@ -100,6 +107,7 @@ var option = new RewriteOptions();
 option.AddRedirect("^$", "swagger"); // Redirection rule to swagger page
 app.UseRewriter(option);
 
+// Executing application
 app.Run();
 
 // Using migration
