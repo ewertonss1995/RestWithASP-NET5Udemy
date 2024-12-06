@@ -18,7 +18,16 @@ var appName = "Rest API's RESTful From 0 to Azure with ASP.NET Core 5 and Docker
 var appVersion = "v1";
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true); // For what url's like swagger url is always in lower case
-builder.Services.AddControllers();
+
+// CORS -> It's allow that aplication from anothers domain can access this app.
+builder.Services.AddCors(options =>
+options.AddDefaultPolicy(builder => builder
+.AllowAnyOrigin()
+.AllowAnyMethod()
+.AllowAnyHeader())
+);
+
+builder.Services.AddControllers(); // Add aplication controllers in this app
 
 // Add context MySQLContext
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
@@ -89,8 +98,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// app.UseRouting(); // For what it is used ?
+
 app.MapControllers(); // Responsable to execute the controllers
 app.MapControllerRoute("DefaultApi", "{controller=values}/v{version=apiVersion}/{id?}"); // Responsable to execute HATEOS
+
+// Enable CORS
+app.UseCors();
 
 // Executing swagger
 app.UseSwagger(); // Responsable to Generate Json with the swagger documentation
