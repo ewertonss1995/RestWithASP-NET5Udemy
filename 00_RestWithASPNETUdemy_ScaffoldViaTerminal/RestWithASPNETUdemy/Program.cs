@@ -30,9 +30,9 @@ options.AddDefaultPolicy(builder => builder
 builder.Services.AddControllers(); // Add aplication controllers in this app
 
 // Add context MySQLContext
-var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
+var connection = builder.Configuration.GetConnectionString("MySQLConnectionString");
 builder.Services.AddDbContext<MySQLContext>(
-    options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0))));
+    options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 40))));
 
 // Configuration to use migrations
 if (builder.Environment.IsDevelopment())
