@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS `person` (
   `address` varchar(100) NOT NULL,
   `gender` varchar(6) NOT NULL,
   PRIMARY KEY (`id`)
-)
+);
